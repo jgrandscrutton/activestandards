@@ -27,4 +27,7 @@ Specifying CRX Host/Port
 The CRX host and port can be specified on the command line with:
 mvn -Dcrx.host=otherhost -Dcrx.port=5502 <goals>
 
+Using the integration
+---------------------
 
+To use this integration the package must be built and installed (see Building above). Once installed the page component needs to be set as the `sling:resourceSuperType` for any existing page components you wish to be able to validate with ActiveStandards.
