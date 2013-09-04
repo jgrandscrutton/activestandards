@@ -1,0 +1,7 @@
+#container { height: 480px }
+#container div { border: 1px solid black }
+#left { float: left; width: 20%; height: 100% }
+#right { float: left; width: 79%; height: 100% }
+#right #header { height: 9% }
+#right #content { height: 91% }
+#container .clearfix { clear: both; border: none }
