@@ -25,9 +25,27 @@ Specifying CRX Host/Port
 ------------------------
 
 The CRX host and port can be specified on the command line with:
-mvn -Dcrx.host=otherhost -Dcrx.port=5502 <goals>
+`mvn -Dcrx.host=otherhost -Dcrx.port=5502 <goals>`
 
 Using the integration
 ---------------------
 
-To use this integration the package must be built and installed (see Building above). Once installed the page component needs to be set as the `sling:resourceSuperType` for any existing page components you wish to be able to validate with ActiveStandards.
+To use this integration the package must be built and installed (see Building above). Before building ensure that your API Key is set in `QuickCheck.java` (in the bundle project):
+
+	private final String API_KEY = "your_api_key_here"; // replace with ActiveStandards API Key
+
+Once installed the page component needs to be set as the `sling:resourceSuperType` for any existing page components you wish to be able to validate with ActiveStandards.
+An `ActiveStandards Quick Check` button is added to the Sidekick in the Page tab. Clicking this button will open the Quick Check results page in a new browser window (or tab)
+
+Outstanding tasks
+-----------------
+
+While the integration is usable in its current state there are still a number of outstanding functional elements:
+
+- Add toggle link to switch between source and in-context view where failed checkpoint supports highlighting for both
+- Create Cloud Service configuration to allow the API Key to be set in a CS config within AEM
+- Create Cloud Service framework to allow the Website Id to be set specifically for sites and sections of sites
+- Improve the styling of the results presentation page
+- Add the display of the failed checkpoint description to the results presentation page
+- Get the normal rendered page source to display when highlighting is not supports (currently the HTML is set but it doesn't display)
+- Implement QuickCheck.java as a Sling service rather than a POJO
