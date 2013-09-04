@@ -44,6 +44,7 @@ public class QuickCheck {
     private RequestResponseFactory requestResponseFactory;
 	
 	private final Logger log = LoggerFactory.getLogger(getClass());
+	private final String API_KEY = "your_api_key_here"; // replace with ActiveStandards API Key
 	private String serverAddress = "http://%s:%s";
 	private String pageUrl = null;
 	private HttpServletRequest request;
@@ -141,7 +142,6 @@ public class QuickCheck {
 			Result result = client.doPostCall(String.format(createAssetUrl, apiKey), bodyParts);
 			
 			if (result.responseBody != null) {
-				// TODO get Asset ID from JSON response
 				JSONObject jo = new JSONObject(new String(result.responseBody));
 				assetId = jo.getString("id");
 			}
@@ -258,7 +258,7 @@ public class QuickCheck {
 	
 	public String getApiKey() {
 		// TODO get from Cloud Service Config
-		return "zzks8jhtgxxqma9x928hupck";
+		return this.API_KEY;
 	}
 	
 	public String getAssetId() {
