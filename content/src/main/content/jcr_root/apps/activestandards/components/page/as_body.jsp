@@ -21,7 +21,7 @@ page import="com.activestandards.QuickCheck,org.apache.sling.commons.json.JSONAr
         </div>
         <div id="right">
             <div id="header">
-                &nbsp;
+                <!-- Source/in-context highlighting toggle will go here -->&nbsp;
             </div>
             <div id="content">
                 &nbsp;
