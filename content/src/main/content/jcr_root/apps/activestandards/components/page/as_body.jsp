@@ -1,6 +1,6 @@
 <%@include file="/libs/foundation/global.jsp"%><%@
 page import="com.activestandards.QuickCheck,org.apache.sling.commons.json.JSONArray,org.apache.sling.commons.json.JSONObject;"%><%
-    QuickCheck qc = new QuickCheck(request, response);
+    QuickCheck qc = new QuickCheck(request, pageProperties);
 	JSONArray ja = qc.doAssetCheck();
 %><body>
     <div id="container">

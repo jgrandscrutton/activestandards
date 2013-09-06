@@ -12,6 +12,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.sling.SlingServlet;
+import org.apache.sling.api.resource.Resource;
+import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
 import org.apache.sling.api.servlets.SlingAllMethodsServlet;
@@ -24,6 +26,9 @@ import com.activestandards.rest.Client;
 import com.activestandards.rest.Result;
 
 import com.day.cq.contentsync.handler.util.RequestResponseFactory;
+import com.day.cq.commons.inherit.InheritanceValueMap;
+import com.day.cq.wcm.webservicesupport.Configuration;
+import com.day.cq.wcm.webservicesupport.ConfigurationManager;
 
 @SlingServlet( paths={
 		"/services/as/quickcheck/assetError",
@@ -34,6 +39,9 @@ public class ServiceProxyServlet extends SlingAllMethodsServlet {
 	 * 
 	 */
 	@Reference
+	protected ConfigurationManager cfgMgr;
+	
+	@Reference
 	protected RequestResponseFactory requestResponseFactory;
 	
 	@Reference
@@ -41,20 +49,33 @@ public class ServiceProxyServlet extends SlingAllMethodsServlet {
 	
 	private static final long serialVersionUID = 3351665482064440449L;
 	private final Logger log = LoggerFactory.getLogger(getClass());
+	private final String serviceIdentifier = "activestandards";
 	private String apiKey;
     private String assetErrorUrl = "http://api.activestandards.com/v1/assets/%s/errors/%s?highlightSource=%s&apiKey=%s";
 	
-	@Override
-	public void init() {
-		QuickCheck qc = new QuickCheck();
-		this.apiKey = qc.getApiKey();
+    private void getApiKey(InheritanceValueMap pageProperties) {
+		String[] services = (String[]) pageProperties.getInherited("cq:cloudserviceconfigs", String[].class);
+		Configuration cfg = cfgMgr.getConfiguration(serviceIdentifier, services);
+		
+		if (cfg != null) {
+			cfg = cfg.getParent().adaptTo(Configuration.class);
+			
+			if (cfg != null) {
+				this.apiKey = cfg.get("apikey", null);
+				log.info("API Key from CSConfig " + apiKey);
+			}
+		}
 	}
-	
+    
 	@Override
 	public void doGet(SlingHttpServletRequest request, SlingHttpServletResponse response) throws ServletException, IOException {
 		try
         {
             String uri = request.getRequestURI();
+            
+            ResourceResolver resolver = request.getResourceResolver();
+            Resource currentResource = resolver.getResource(uri);
+            InheritanceValueMap pageProperties = currentResource.adaptTo(InheritanceValueMap.class);
 
             if ("/services/as/quickcheck/assetError".equals(uri)) {
 				String assetId = request.getParameter("assetId");
@@ -81,7 +102,7 @@ public class ServiceProxyServlet extends SlingAllMethodsServlet {
             		HttpServletRequest mockRequest = requestResponseFactory.createRequest("GET", path);
             		HttpServletResponse mockResponse = requestResponseFactory.createResponse(outputStream);
             		log.info("doGetCall : getContent : Processing request");
-            		requestProcessor.processRequest(mockRequest, mockResponse, request.getResourceResolver());
+            		requestProcessor.processRequest(mockRequest, mockResponse, resolver);
             		
             		mockResponse.getWriter().flush();
             		PrintWriter out = response.getWriter();
