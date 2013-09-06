@@ -96,7 +96,7 @@
 				</excludes>
 				<includes>
 					<include>apps/**</include>
-					<include>libs/foundation/global.jsp</include>
+					<!-- <include>libs/foundation/global.jsp</include> -->
 				</includes>
 			</resource>
 		</resources>

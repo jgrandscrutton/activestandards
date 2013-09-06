@@ -118,7 +118,6 @@
 				<configuration>
 					<instructions>
 						<Export-Package>com.activestandards</Export-Package>
-						<!-- <Import-Package>com.sun.jersey</Import-Package> -->
 						<Private-Package>com.activestandards.*</Private-Package>
 						<Bundle-SymbolicName>com.activestandards.activestandards-bundle</Bundle-SymbolicName>
 					</instructions>
