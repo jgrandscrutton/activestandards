@@ -76,6 +76,6 @@
         });
         </script>     
     </div>
-    <cq:include script="/apps/activestandards/components/activestandardspage/content.jsp" />
+    <cq:include script="content.jsp" />
     <p>&nbsp;</p>
 </body>
