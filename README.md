@@ -43,8 +43,8 @@ Outstanding tasks
 While the integration is usable in its current state there are still a number of outstanding functional elements:
 
 - Add toggle link to switch between source and in-context view where failed checkpoint supports highlighting for both
-- Create Cloud Service configuration to allow the API Key to be set in a CS config within AEM
-- Create Cloud Service framework to allow the Website Id to be set specifically for sites and sections of sites
+- Update `QuickCheck.java` to read API key from Cloud Service config
+- Update `QuickCheck.java` to read website ID from Cloud Service framework
 - Improve the styling of the results presentation page
 - Add the display of the failed checkpoint description to the results presentation page
 - Get the normal rendered page source to display when highlighting is not supports (currently the HTML is set but it doesn't display)
