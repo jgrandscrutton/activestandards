@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0"
+    jcr:description="Framework to define Website ID for QuickCheck integration"
+    jcr:primaryType="cq:Template"
+    jcr:title="ActiveStandards QuickCheck Framework"
+    sling:resourceSuperType="cq/cloudserviceconfigs/templates/configpage"
+    allowedChildren="[/apps/activestandards/templates/framework]"
+    allowedParents="[/apps/activestandards/templates/activestandards,/apps/activestandards/templates/framework]"
+    allowedPaths="[/etc/cloudservices/activestandards/.*(/.*)?]"
+    componentReference="activestandards/components/activestandards"
+    ranking="{Long}90">
+    <jcr:content
+        cq:cloudservicename="activestandards"
+        cq:designPath="/etc/designs/cloudservices/framework-design"
+        jcr:primaryType="cq:PageContent"
+        sling:resourceType="activestandards/components/framework">
+        <!-- <mappings
+            jcr:primaryType="nt:unstructured"
+            sling:resourceType="cq/analytics/components/mappings/maparsys"/> -->
+    </jcr:content>
+</jcr:root>

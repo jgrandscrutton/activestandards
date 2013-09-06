@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0"
+    jcr:primaryType="cq:Template"
+    jcr:title="ActiveStandards Cloud Service Config"
+    sling:resourceSuperType="cq/cloudserviceconfigs/templates/configpage"
+    allowedChildren="[/apps/activestandards/templates/activestandards,/apps/activestandards/templates/framework]"
+    allowedPaths="[/etc/cloudservices/activestandards(/.*)?]"
+    ranking="{Long}100">
+    <jcr:content
+        jcr:primaryType="cq:PageContent"
+        sling:resourceType="activestandards/components/activestandardspage"/>
+</jcr:root>

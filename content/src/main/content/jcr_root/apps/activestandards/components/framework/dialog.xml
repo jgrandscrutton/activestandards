@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jcr:root xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0"
+    jcr:primaryType="cq:Dialog"
+    xtype="dialog">
+    <items
+        jcr:primaryType="cq:Widget"
+        xtype="tabpanel">
+        <items jcr:primaryType="cq:WidgetCollection">
+            <config
+                jcr:primaryType="cq:Panel"
+                title="Config">
+                <items jcr:primaryType="cq:WidgetCollection">
+                    <apikey
+                        jcr:primaryType="cq:Widget"
+                        allowBlank="false"
+                        fieldDescription="ActiveStandards Website ID"
+                        fieldLabel="Website ID"
+                        name="./websiteid"
+                        xtype="textfield"/>
+                </items>
+            </config>
+        </items>
+    </items>
+</jcr:root>
