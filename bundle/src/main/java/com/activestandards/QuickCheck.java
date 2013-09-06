@@ -1,9 +1,7 @@
 package com.activestandards;
 
 import java.io.ByteArrayOutputStream;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
@@ -11,8 +9,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Reference;
-import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
 import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
@@ -26,14 +22,17 @@ import org.osgi.framework.ServiceReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.activestandards.rest.NewRestClient;
 import com.activestandards.rest.Client;
 import com.activestandards.rest.Result;
 
 import com.day.cq.contentsync.handler.util.RequestResponseFactory;
+import com.day.cq.commons.inherit.InheritanceValueMap;
+import com.day.cq.wcm.webservicesupport.Configuration;
+import com.day.cq.wcm.webservicesupport.ConfigurationManager;
 
 @Component (immediate=true, metatype=false)
 public class QuickCheck {
+	@Reference ConfigurationManager cfgMgr;
 	@Reference
 	private SlingRequestProcessor slingRequestProcessor;
 	
@@ -44,15 +43,14 @@ public class QuickCheck {
     private RequestResponseFactory requestResponseFactory;
 	
 	private final Logger log = LoggerFactory.getLogger(getClass());
-	private final String API_KEY = "zzks8jhtgxxqma9x928hupck"; //"your_api_key_here"; // replace with ActiveStandards API Key
+	private final String serviceIdentifier = "activestandards";
+	private final String API_KEY = "your_api_key_here"; // replace with ActiveStandards API Key
 	private String serverAddress = "http://%s:%s";
 	private String pageUrl = null;
 	private HttpServletRequest request;
-	private HttpServletResponse response;
 	private String apiKey = null;
 	private String websiteId = null;
 	private String assetId = null;
-	private String getWebsiteUrl = "http://api.activestandards.com/v1/websites?apiKey=%s";
 	private String findAssetUrl = "http://api.activestandards.com/v1/assets?websiteId=%s&url=%s&apiKey=%s";
 	private String createAssetUrl = "http://api.activestandards.com/v1/assets?apiKey=%s";
 	private String updateAssetUrl = "http://api.activestandards.com/v1/assets/%s?apiKey=%s";
@@ -60,12 +58,15 @@ public class QuickCheck {
 	private String checkAssetUrl = "http://api.activestandards.com/v1/assets/%s/status?apiKey=%s";
 	
 	public QuickCheck() {
-		this.apiKey = getApiKey();
+		//this.apiKey = getApiKey();
 	}
 	
-	public QuickCheck(HttpServletRequest request, HttpServletResponse response) {
+	public QuickCheck(HttpServletRequest request, InheritanceValueMap pageProperties) {
 		BundleContext bundleContext = FrameworkUtil.getBundle(QuickCheck.class).getBundleContext();
-		ServiceReference serviceRef = bundleContext.getServiceReference(RequestResponseFactory.class.getName());
+		ServiceReference serviceRef = bundleContext.getServiceReference(ConfigurationManager.class.getName());
+		this.cfgMgr = (ConfigurationManager) bundleContext.getService(serviceRef);
+		
+		serviceRef = bundleContext.getServiceReference(RequestResponseFactory.class.getName());
 		this.requestResponseFactory = (RequestResponseFactory) bundleContext.getService(serviceRef);
 		
 		serviceRef = bundleContext.getServiceReference(ResourceResolverFactory.class.getName());
@@ -75,33 +76,29 @@ public class QuickCheck {
 		this.slingRequestProcessor = (SlingRequestProcessor) bundleContext.getService(serviceRef);
 		
 		this.request = request;
-		this.response = response;
 		
 		this.serverAddress = String.format(this.serverAddress, request.getServerName(), request.getServerPort());
 		this.pageUrl = request.getRequestURI().toString();
 		this.pageUrl = this.pageUrl.replace("/cf#", "");
 		this.pageUrl = this.pageUrl.replace(".quickcheck", "");
-		this.apiKey = getApiKey();
-		this.websiteId = getWebsiteId();
+		getWebsiteIdAndApiKey(pageProperties);
 	}
 	
-	private String getWebsiteId() {
-		// TODO get Website ID from Cloud Service framework
-		String websiteId = null;
+	private void getWebsiteIdAndApiKey(InheritanceValueMap pageProperties) {
+		String[] services = (String[]) pageProperties.getInherited("cq:cloudserviceconfigs", String[].class);
+		Configuration cfg = cfgMgr.getConfiguration(serviceIdentifier, services);
 		
-		try {
-			Client client = new Client();
-			Result result = client.doGetCall(String.format(getWebsiteUrl, this.apiKey));
+		if (cfg != null) {
+			this.websiteId = (String) cfg.get("websiteid", null);
+			log.info("WebsiteID from CSConfig: " + websiteId);
 			
-			if (result.responseBody != null) {
-				JSONArray ja = new JSONArray(new String(result.responseBody));
-				websiteId = ja.getJSONObject(0).getString("id");
+			cfg = cfg.getParent().adaptTo(Configuration.class);
+			
+			if (cfg != null) {
+				this.apiKey = cfg.get("apikey", null);
+				log.info("API Key from CSConfig " + apiKey);
 			}
-			
-		} catch (Exception e) {
-			log.error("getWebsite error ", e);
 		}
-		return websiteId;
 	}
 	
 	private int findAsset(String websiteId, String pageUrl, String apiKey) {

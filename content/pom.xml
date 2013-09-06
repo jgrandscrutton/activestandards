@@ -96,6 +96,7 @@
 				</excludes>
 				<includes>
 					<include>apps/**</include>
+					<include>etc/cloudservices/activestandards/.content.xml</include>
 					<!-- <include>libs/foundation/global.jsp</include> -->
 				</includes>
 			</resource>

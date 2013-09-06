@@ -35,6 +35,9 @@ To use this integration the package must be built and installed (see Building ab
 	private final String API_KEY = "your_api_key_here"; // replace with ActiveStandards API Key
 
 Once installed the page component needs to be set as the `sling:resourceSuperType` for any existing page components you wish to be able to validate with ActiveStandards.
+The API key used to authenticate requests to the ActiveStandards API is set as a Cloud Service configuration. A website Id also needs to be specified. This is done with a 
+Cloud Service framework. The framework needs to be set in the properties of a site's root page, or specific sub-pages, depending on how the site structure relates to the sites
+set up in ActiveStandards. 
 An `ActiveStandards Quick Check` button is added to the Sidekick in the Page tab. Clicking this button will open the Quick Check results page in a new browser window (or tab)
 
 Outstanding tasks
@@ -43,9 +46,7 @@ Outstanding tasks
 While the integration is usable in its current state there are still a number of outstanding functional elements:
 
 - Add toggle link to switch between source and in-context view where failed checkpoint supports highlighting for both
-- Update `QuickCheck.java` to read API key from Cloud Service config
-- Update `QuickCheck.java` to read website ID from Cloud Service framework
 - Improve the styling of the results presentation page
 - Add the display of the failed checkpoint description to the results presentation page
 - Get the normal rendered page source to display when highlighting is not supports (currently the HTML is set but it doesn't display)
-- Implement QuickCheck.java as a Sling service rather than a POJO
+- Implement `QuickCheck.java` as a Sling service rather than a POJO
