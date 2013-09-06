@@ -44,7 +44,7 @@ public class QuickCheck {
 	
 	private final Logger log = LoggerFactory.getLogger(getClass());
 	private final String serviceIdentifier = "activestandards";
-	private final String API_KEY = "your_api_key_here"; // replace with ActiveStandards API Key
+	//private final String API_KEY = "your_api_key_here"; // replace with ActiveStandards API Key
 	private String serverAddress = "http://%s:%s";
 	private String pageUrl = null;
 	private HttpServletRequest request;
@@ -254,10 +254,9 @@ public class QuickCheck {
 		return ja;
 	}
 	
-	public String getApiKey() {
-		// TODO get API Key from Cloud Service configuration
+	/*public String getApiKey() {
 		return this.API_KEY;
-	}
+	}*/
 	
 	public String getAssetId() {
 		return this.assetId;
