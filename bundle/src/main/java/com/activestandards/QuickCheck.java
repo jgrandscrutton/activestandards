@@ -44,7 +44,7 @@ public class QuickCheck {
     private RequestResponseFactory requestResponseFactory;
 	
 	private final Logger log = LoggerFactory.getLogger(getClass());
-	private final String API_KEY = "zzks8jhtgxxqma9x928hupck"; //"your_api_key_here"; // replace with ActiveStandards API Key
+	private final String API_KEY = "your_api_key_here"; // replace with ActiveStandards API Key
 	private String serverAddress = "http://%s:%s";
 	private String pageUrl = null;
 	private HttpServletRequest request;
