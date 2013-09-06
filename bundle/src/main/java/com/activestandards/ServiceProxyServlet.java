@@ -76,6 +76,7 @@ public class ServiceProxyServlet extends SlingAllMethodsServlet {
             ResourceResolver resolver = request.getResourceResolver();
             Resource currentResource = resolver.getResource(uri);
             InheritanceValueMap pageProperties = currentResource.adaptTo(InheritanceValueMap.class);
+            getApiKey(pageProperties);
 
             if ("/services/as/quickcheck/assetError".equals(uri)) {
 				String assetId = request.getParameter("assetId");
