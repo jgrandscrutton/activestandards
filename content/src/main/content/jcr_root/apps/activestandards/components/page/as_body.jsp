@@ -1,30 +1,34 @@
 <%@include file="/libs/foundation/global.jsp"%><%@
-page import="com.activestandards.QuickCheck,org.apache.sling.commons.json.JSONArray,org.apache.sling.commons.json.JSONObject;"%><%
-    QuickCheck qc = new QuickCheck(request, pageProperties);
-	JSONArray ja = qc.doAssetCheck();
+page import="com.activestandards.QuickCheckResult,com.activestandards.service.QuickCheckService,org.apache.sling.commons.json.JSONArray,org.apache.sling.commons.json.JSONObject;"%><%
+    QuickCheckService qcs = sling.getService(QuickCheckService.class);
+	QuickCheckResult result = qcs.doAssetCheck(request, pageProperties);
+	int failedCheckpointsCount = result.getFailedCheckpointsCount();
 %><body>
     <div id="container">
         <h1>ActiveStandards QuickCheck</h1>
         <div id="left">
-			<% if (ja.length() > 0) { %>
-			<h2><%=ja.length() %> errors found.</h2>
-			<ul>
-				<%
-					for (int i = 0; i < ja.length(); i++) {
-						JSONObject checkpoint = ja.getJSONObject(i);
-						JSONObject canHighlight = checkpoint.getJSONObject("canHighlight");
-				%>
-				<li><a href="javascript:ShowCheckpoint('<%=qc.getAssetId() %>', '<%=checkpoint.getString("id") %>', <%=canHighlight.getString("page") %>, <%=canHighlight.getString("source") %>)"><%=checkpoint.getString("reference") %> <%=checkpoint.getString("name") %></a></li>
-				<% } %>
-			</ul>
-			<% } %>
-        </div>
+        	<h2><%=failedCheckpointsCount %> error<% if (failedCheckpointsCount != 1) { %>s<% } %> found.</h2>
+<%
+	if (result.getFailedCheckpointsCount() > 0) {
+		JSONArray failedCheckpoints = result.getFailedCheckpoints();
+%>			<ul>
+<%
+		for (int i = 0; i < failedCheckpointsCount; i++) {
+			JSONObject checkpoint = failedCheckpoints.getJSONObject(i);
+			JSONObject canHighlight = checkpoint.getJSONObject("canHighlight");
+%>				<li><a href="javascript:ShowCheckpoint('<%=qcs.getAssetId() %>', '<%=checkpoint.getString("id") %>', <%=canHighlight.getString("page") %>, <%=canHighlight.getString("source") %>)"><%=checkpoint.getString("reference") %> <%=checkpoint.getString("name") %></a></li>
+<%
+		}
+%>			</ul>
+<%
+	}
+%>        </div>
         <div id="right">
             <div id="header">
                 &nbsp;
             </div>
             <div id="content">
-                &nbsp;
+                <iframe id="contentframe" style="width:100%;height:100%" src="about:blank"></iframe>
             </div>
         </div>
         <div class="clearfix"></div>

@@ -17,6 +17,20 @@
                         fieldLabel="API Key"
                         name="./apikey"
                         xtype="textfield"/>
+                    <proxyhost
+                        jcr:primaryType="cq:Widget"
+                        allowBlank="true"
+                        fieldDescription="Proxy Server Host Name"
+                        fieldLabel="Proxy Host"
+                        name="./proxyhost"
+                        xtype="textfield"/>
+                    <proxyport
+                        jcr:primaryType="cq:Widget"
+                        allowBlank="true"
+                        fieldDescription="Proxy Server Port Number"
+                        fieldLabel="Proxy Port"
+                        name="./proxyport"
+                        xtype="textfield"/>
                 </items>
             </config>
         </items>

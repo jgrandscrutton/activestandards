@@ -1,38 +1,35 @@
 package com.activestandards;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.io.PrintWriter;
-import java.util.Map;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.sling.SlingServlet;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
+import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
 import org.apache.sling.api.servlets.SlingAllMethodsServlet;
 import org.apache.sling.engine.SlingRequestProcessor;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.activestandards.rest.Client;
 import com.activestandards.rest.Result;
-
+import com.activestandards.service.QuickCheckService;
 import com.day.cq.contentsync.handler.util.RequestResponseFactory;
+import com.day.cq.commons.inherit.HierarchyNodeInheritanceValueMap;
 import com.day.cq.commons.inherit.InheritanceValueMap;
 import com.day.cq.wcm.webservicesupport.Configuration;
 import com.day.cq.wcm.webservicesupport.ConfigurationManager;
 
 @SlingServlet( paths={
 		"/services/as/quickcheck/assetError",
-		"/services/as/quickcheck/getContent"
+		"/services/as/quickcheck/getContent",
+		"/services/as/quickcheck/deleteAsset"
 		} )
 public class ServiceProxyServlet extends SlingAllMethodsServlet {
 	/**
@@ -45,12 +42,20 @@ public class ServiceProxyServlet extends SlingAllMethodsServlet {
 	protected RequestResponseFactory requestResponseFactory;
 	
 	@Reference
+    protected ResourceResolverFactory resourceResolverFactory;
+	
+	@Reference
 	protected SlingRequestProcessor requestProcessor;
+	
+	@Reference
+	protected QuickCheckService quickCheckService;
 	
 	private static final long serialVersionUID = 3351665482064440449L;
 	private final Logger log = LoggerFactory.getLogger(getClass());
 	private final String serviceIdentifier = "activestandards";
-	private String apiKey;
+	private String apiKey = null;
+	private String proxyHost = null;
+	private String proxyPort = null;
     private String assetErrorUrl = "http://api.activestandards.com/v1/assets/%s/errors/%s?highlightSource=%s&apiKey=%s";
 	
     private void getApiKey(InheritanceValueMap pageProperties) {
@@ -62,7 +67,11 @@ public class ServiceProxyServlet extends SlingAllMethodsServlet {
 			
 			if (cfg != null) {
 				this.apiKey = cfg.get("apikey", null);
-				log.info("API Key from CSConfig " + apiKey);
+				log.debug("API Key from CSConfig " + apiKey);
+				this.proxyHost = cfg.get("proxyhost", null);
+				log.debug("Proxy host from CSConfig " + proxyHost);
+				this.proxyPort = cfg.get("proxyport", null);
+				log.debug("Proxy port from CSConfig " + proxyPort);
 			}
 		}
 	}
@@ -72,10 +81,14 @@ public class ServiceProxyServlet extends SlingAllMethodsServlet {
 		try
         {
             String uri = request.getRequestURI();
+            String referer = quickCheckService.getResourcePathFromUrl(request.getHeader("referer"));
+            
+            log.info("doGet referrer: " + referer);
             
             ResourceResolver resolver = request.getResourceResolver();
-            Resource currentResource = resolver.getResource(uri);
-            InheritanceValueMap pageProperties = currentResource.adaptTo(InheritanceValueMap.class);
+            Resource currentResource = resolver.getResource(referer);
+            InheritanceValueMap pageProperties = new HierarchyNodeInheritanceValueMap(currentResource);
+            
             getApiKey(pageProperties);
 
             if ("/services/as/quickcheck/assetError".equals(uri)) {
@@ -83,39 +96,27 @@ public class ServiceProxyServlet extends SlingAllMethodsServlet {
                 String checkpointId = request.getParameter("checkpointId");
                 String highlightSource = request.getParameter("highlightSource");
 
-                Client restClient = new Client();
-                Result result = restClient.doGetCall(String.format(assetErrorUrl, assetId, checkpointId, highlightSource, this.apiKey));
+                Client client = new Client(proxyHost, proxyPort);
+                Result result = client.doGetCall(String.format(assetErrorUrl, assetId, checkpointId, highlightSource, this.apiKey));
                 response.setContentType("text/html");
                 PrintWriter out = response.getWriter();
                 out.write(new String(result.responseBody));
             }
             
             if ("/services/as/quickcheck/getContent".equals(uri)) {
-            	String path = request.getParameter("path");
-            	log.info("doGet : getContent path : " + path);
+            	String path = referer + ".html";
+            	log.debug("doGet : getContent path : " + path);
             	
-            	if (path != null) {
-            		path = path.replace("/cf#", "");
-            		path = path.replace(".quickcheck", "");
-            		
-            		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-            		log.info("doGetCall : getContent : Creating request");
-            		HttpServletRequest mockRequest = requestResponseFactory.createRequest("GET", path);
-            		HttpServletResponse mockResponse = requestResponseFactory.createResponse(outputStream);
-            		log.info("doGetCall : getContent : Processing request");
-            		requestProcessor.processRequest(mockRequest, mockResponse, resolver);
-            		
-            		mockResponse.getWriter().flush();
-            		PrintWriter out = response.getWriter();
-            		
-            		log.info("doGetCall : getContent : Returning response");
-            		response.setContentType("text/html");
-            		out.write(outputStream.toString());
-            	} else {
-            		response.setContentType("application/json");
-            		PrintWriter out = response.getWriter();
-            		out.write("{\"refererUrl\" : \"No referer URL to 'GET'\"}");
-            	}
+        		PrintWriter out = response.getWriter();
+            	String pageContent = quickCheckService.getContent(path, resolver);
+            	
+        		log.debug("doGetCall : getContent : Returning response");
+        		response.setContentType("text/html");
+        		out.write(pageContent);
+            }
+            
+            if ("/services/as/quickcheck/deleteAsset".equals(uri)) {
+            	quickCheckService.deleteAsset(referer + ".html", pageProperties);
             }
         } catch (Exception e) {
         	log.error("Error", e);

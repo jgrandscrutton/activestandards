@@ -21,6 +21,8 @@
     <img src="<%=thumbnailPath%>" alt="<%=serviceName%>" style="float: left;" />
     <ul style="float: left; margin: 0px;">
         <li><div class="li-bullet"><strong>API Key: </strong><%= xssAPI.encodeForHTML(properties.get("apikey", "")) %></div></li>
+        <li><div class="li-bullet"><strong>Proxy Host: </strong><%= xssAPI.encodeForHTML(properties.get("proxyhost", "")) %></div></li>
+        <li><div class="li-bullet"><strong>Proxy Port: </strong><%= xssAPI.encodeForHTML(properties.get("proxyport", "")) %></div></li>
         <li class="config-successful-message when-config-successful" style="display: none">
         	ActiveStandards configuration is successful.<br>
 			Please <%=createLink %> or edit an QuickCheck framework, and apply it to your <a href=\"/siteadmin\">website</a>.
