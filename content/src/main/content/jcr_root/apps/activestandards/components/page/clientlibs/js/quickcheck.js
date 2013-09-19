@@ -1,6 +1,11 @@
+var assetErrorUrl = "/services/as/quickcheck/assetError?assetId={0}&checkpointId={1}&highlightSource={2}";
+var getContentUrl = "/services/as/quickcheck/getContent";
+var toggleLinkText = "Click here to show {0} view";
+var toggleLinkUrl = "javascript:ToggleDisplay('{0}')";
+
 ShowCheckpoint = function(assetId, checkpointId, canHighlightPage, canHighlightSource) {
     console.debug(assetId, checkpointId, canHighlightPage, canHighlightSource);
-	//$("#content").empty();
+	
     if (canHighlightPage) {
         LoadPage(assetId, checkpointId, canHighlightSource);
     } else if (canHighlightSource) {
@@ -21,51 +26,41 @@ if (!String.prototype.format) {
 }
 
 LoadPage = function(assetId, checkpointId, canHighlightSource) {
-	var assetErrorUrl = "/services/as/quickcheck/assetError?assetId={0}&checkpointId={1}&highlightSource={2}";
+	var contentFrame = $("#contentframe")[0];
+	contentFrame.src = assetErrorUrl.format(assetId, checkpointId, false);
 
-    $.ajax({
-        url: assetErrorUrl.format(assetId, checkpointId, false),
-        success: function(result) {
-            console.debug(result);
-            //$("#content").append($(result));
-			window.frames[0].document.documentElement.innerHTML = result;
-        }
-    });
-
-    if (canHighlightSource) {
+	var toggleLink = $("#toggleLink");
+	toggleLink.attr("href", toggleLinkUrl.format(assetErrorUrl.format(assetId, checkpointId, true)));
+	toggleLink.text(toggleLinkText.format("Source"));
+	toggleLink.removeAttr("class");
+	
+    /*if (canHighlightSource) {
 		$.ajax({
         	url: assetErrorUrl.format(assetId, checkpointId, true),
         	success: function(result) {
             	console.debug(result);
         	}
     	});
-    }
+    }*/
 }
 
 LoadSource = function(assetId, checkpointId) {
-	var assetErrorUrl = "/services/as/quickcheck/assetError?assetId={0}&checkpointId={1}&highlightSource=true";
-
-    $.ajax({
-        url: assetErrorUrl.format(assetId, checkpointId),
-        success: function(result) {
-            console.debug(result);
-            //$("#content").append($(result));
-			window.frames[0].document.documentElement.innerHTML = result;
-        }
-    });
+	$("#toggleLink").attr("class", "hidden");
+	$("#contentframe")[0].src = assetErrorUrl.format(assetId, checkpointId, true);
 }
 
 ReadPage = function() {
-	var getContentUrl = "/services/as/quickcheck/getContent";
+	$("#toggleLink").attr("class", "hidden");
+	$("#contentframe")[0].src = window.location.href.replace(".quickcheck", "") + "?wcmmode=disabled"; //getContentUrl;
+}
+
+ToggleDisplay = function(url) {
+	var contentFrame = $("#contentframe")[0];
+	var toggleLink = $("#toggleLink");
 	
-	$.ajax({
-		url: getContentUrl,
-		success: function(result) {
-			console.debug(result);
-			//$("content").append($(result));
-			window.frames[0].document.documentElement.innerHTML = result;
-		}
-	});
+	toggleLink.attr("href", toggleLinkUrl.format(contentFrame.src));
+	toggleLink.text(toggleLinkText.format("Live"));
+	contentFrame.src = url;
 }
 
 var windowClosing = true;

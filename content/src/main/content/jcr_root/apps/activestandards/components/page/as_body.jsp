@@ -16,7 +16,7 @@ page import="com.activestandards.QuickCheckResult,com.activestandards.service.Qu
 		for (int i = 0; i < failedCheckpointsCount; i++) {
 			JSONObject checkpoint = failedCheckpoints.getJSONObject(i);
 			JSONObject canHighlight = checkpoint.getJSONObject("canHighlight");
-%>				<li><a href="javascript:ShowCheckpoint('<%=qcs.getAssetId() %>', '<%=checkpoint.getString("id") %>', <%=canHighlight.getString("page") %>, <%=canHighlight.getString("source") %>)"><%=checkpoint.getString("reference") %> <%=checkpoint.getString("name") %></a></li>
+%>				<li><a href="javascript:ShowCheckpoint('<%=result.getAssetId() %>', '<%=checkpoint.getString("id") %>', <%=canHighlight.getString("page") %>, <%=canHighlight.getString("source") %>)"><%=checkpoint.getString("reference") %> <%=checkpoint.getString("name").replace("<", "&lt;") %></a></li>
 <%
 		}
 %>			</ul>
@@ -25,7 +25,7 @@ page import="com.activestandards.QuickCheckResult,com.activestandards.service.Qu
 %>        </div>
         <div id="right">
             <div id="header">
-                &nbsp;
+                <a id="toggleLink" class="hidden"></a>
             </div>
             <div id="content">
                 <iframe id="contentframe" style="width:100%;height:100%" src="about:blank"></iframe>

@@ -1,6 +1,7 @@
 package com.activestandards.service.impl;
 
 import java.io.ByteArrayOutputStream;
+import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -203,9 +204,10 @@ public class QuickCheckServiceImpl implements QuickCheckService {
 	}
 	
 	private String updateAsset(String assetId, String pageContent, String apiKey) {
-		String requestData = String.format(updateRequestData, pageContent);
 		
 		try {
+			String requestData = String.format(updateRequestData, URLEncoder.encode(pageContent, "UTF-8"));
+			
 			Client client = new Client(this.proxyHost, this.proxyPort);
 			Result result = client.doPutCall(String.format(updateAssetUrl, assetId, apiKey), requestData);
 			

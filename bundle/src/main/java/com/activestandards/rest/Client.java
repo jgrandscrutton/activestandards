@@ -33,9 +33,9 @@ public class Client {
 		Result result = new Result();
 		
 		HttpClient httpClient = new HttpClient();
-		
 		if (this.proxyHost != null)
 			httpClient.getHostConfiguration().setProxy(this.proxyHost, this.proxyPort);
+		
 		GetMethod get = new GetMethod(url);
 		
 		logger.debug("rest.Client " + get.getQueryString());
@@ -51,15 +51,19 @@ public class Client {
 	
 	public Result doPostCall(String url, Map<String,String> bodyParts) throws Exception {
         Result restResult = new Result();
-        logger.info("doPostCall : url " + url);
-        HttpClient httpclient = new HttpClient();
+        logger.debug("doPostCall : url " + url);
+        
+        HttpClient httpClient = new HttpClient();
+        if (this.proxyHost != null)
+			httpClient.getHostConfiguration().setProxy(this.proxyHost, this.proxyPort);
+        
         PostMethod post = new PostMethod(url);
 
         if (bodyParts != null) {
         	post.setRequestBody(addNameValuePairs(bodyParts));
         }
         
-        restResult.resultCode = httpclient.executeMethod(post);
+        restResult.resultCode = httpClient.executeMethod(post);
         logger.info("rest.Client POST resultCode: " + restResult.resultCode);
         if (restResult.resultCode <300) {
             restResult.responseBody = IOUtils.toByteArray(post.getResponseBodyAsStream());
@@ -72,10 +76,14 @@ public class Client {
     public Result doDeleteCall(String url) throws Exception {
         Result result = new Result();
         logger.debug("doDeleteCall : " + url);
-        HttpClient client = new HttpClient();
+        
+        HttpClient httpClient = new HttpClient();
+        if (this.proxyHost != null)
+			httpClient.getHostConfiguration().setProxy(this.proxyHost, this.proxyPort);
+        
         DeleteMethod delete = new DeleteMethod(url);
         
-        result.resultCode = client.executeMethod(delete);
+        result.resultCode = httpClient.executeMethod(delete);
         logger.info("doDeleteCall : result code " + result.resultCode);
         /*if (result.resultCode < 300) {
         	result.responseBody = IOUtils.toByteArray(delete.getResponseBodyAsStream());
@@ -86,15 +94,20 @@ public class Client {
 
     public Result doPutCall(String url, String requestData) throws Exception {
     	Result result = new Result();
-        logger.info("doPutCall : " + url);
-        HttpClient client = new HttpClient();
+        logger.debug("doPutCall : " + url);
+        
+        HttpClient httpClient = new HttpClient();
+        if (this.proxyHost != null)
+			httpClient.getHostConfiguration().setProxy(this.proxyHost, this.proxyPort);
+        
         PutMethod put = new PutMethod(url);
         
         if (requestData != null) {
+        	put.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
         	put.setRequestEntity(new StringRequestEntity(requestData, "application/x-www-form-urlencoded", "UTF-8"));
         }
         
-        result.resultCode = client.executeMethod(put);
+        result.resultCode = httpClient.executeMethod(put);
         logger.info("doPutCall : result code " + result.resultCode);
         
         if (result.resultCode < 300) {
