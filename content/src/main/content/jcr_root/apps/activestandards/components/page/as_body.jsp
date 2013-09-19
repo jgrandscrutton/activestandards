@@ -25,11 +25,7 @@ page import="com.activestandards.QuickCheckResult,com.activestandards.service.Qu
 %>        </div>
         <div id="right">
             <div id="header">
-<<<<<<< HEAD
-                <!-- Source/in-context highlighting toggle will go here -->&nbsp;
-=======
                 <a id="toggleLink" class="hidden"></a>
->>>>>>> jgs-working
             </div>
             <div id="content">
                 <iframe id="contentframe" style="width:100%;height:100%" src="about:blank"></iframe>
