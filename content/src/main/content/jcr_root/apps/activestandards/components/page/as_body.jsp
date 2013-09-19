@@ -25,7 +25,7 @@ page import="com.activestandards.QuickCheckResult,com.activestandards.service.Qu
 %>        </div>
         <div id="right">
             <div id="header">
-                <a id="toggleLink" class="hidden"></a>
+                <a id="toggleLink" class="hidden"></a>&nbsp;
             </div>
             <div id="content">
                 <iframe id="contentframe" style="width:100%;height:100%" src="about:blank"></iframe>
