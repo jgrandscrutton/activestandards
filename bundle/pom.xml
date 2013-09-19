@@ -8,7 +8,7 @@
 	<parent>
 		<groupId>com.activestandards</groupId>
 		<artifactId>activestandards</artifactId>
-		<version>1.0-SNAPSHOT</version>
+		<version>1.1-SNAPSHOT</version>
 	</parent>
 
 	<!-- ====================================================================== -->
@@ -100,6 +100,14 @@
 			<groupId>com.day.cq.wcm</groupId>
 			<artifactId>cq-wcm-webservice-support</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.apache.sling</groupId>
+			<artifactId>org.apache.sling.commons.osgi</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.sling</groupId>
+			<artifactId>org.apache.sling.commons.log</artifactId>
+		</dependency>
 	</dependencies>
 
 	<!-- ====================================================================== -->
@@ -125,7 +133,11 @@
 				<extensions>true</extensions>
 				<configuration>
 					<instructions>
-						<Export-Package>com.activestandards</Export-Package>
+						<Export-Package>
+							com.activestandards,
+							com.activestandards.service,
+							com.activestandards.service.impl
+						</Export-Package>
 						<Private-Package>com.activestandards.*</Private-Package>
 						<Bundle-SymbolicName>com.activestandards.activestandards-bundle</Bundle-SymbolicName>
 					</instructions>

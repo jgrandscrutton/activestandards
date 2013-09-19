@@ -19,6 +19,7 @@ import org.apache.sling.engine.SlingRequestProcessor;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceReference;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -229,7 +230,7 @@ public class QuickCheck {
 		
 		if (this.apiKey != null && this.websiteId != null && this.pageUrl != null) {
 			int assetCount = findAsset(this.websiteId, this.pageUrl, this.apiKey);
-			//log.info(Integer.toString(assetCount));
+			
 			String pageContent = getContent(this.pageUrl);
 			
 			if (assetCount > 0 && this.assetId != null && pageContent != null) {
@@ -253,10 +254,6 @@ public class QuickCheck {
 		
 		return ja;
 	}
-	
-	/*public String getApiKey() {
-		return this.API_KEY;
-	}*/
 	
 	public String getAssetId() {
 		return this.assetId;

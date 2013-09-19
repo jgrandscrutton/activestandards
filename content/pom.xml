@@ -8,7 +8,7 @@
 	<parent>
 		<groupId>com.activestandards</groupId>
 		<artifactId>activestandards</artifactId>
-		<version>1.0-SNAPSHOT</version>
+		<version>1.1-SNAPSHOT</version>
 	</parent>
 
 	<!-- ====================================================================== -->
@@ -96,7 +96,7 @@
 				</excludes>
 				<includes>
 					<include>apps/**</include>
-					<include>etc/cloudservices/activestandards/.content.xml</include>
+					<!-- <include>etc/cloudservices/activestandards/.content.xml</include> -->
 					<!-- <include>libs/foundation/global.jsp</include> -->
 				</includes>
 			</resource>
