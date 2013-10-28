@@ -30,14 +30,20 @@ The CRX host and port can be specified on the command line with:
 Using the integration
 ---------------------
 
-To use this integration the package must be built and installed (see Building above). Before building ensure that your API Key is set in `QuickCheck.java` (in the bundle project):
+To use this integration the package must be built and installed (see Building above).
 
-	private final String API_KEY = "your_api_key_here"; // replace with ActiveStandards API Key
+The integration is enabled by setting the `sling:resourceSuperType` for the page component of any template where validation is required. For example, in the Geometrixx Outdoors
+site the `page` component is a supertype for all other page components, and the default supertype for this component is `foundation/components/page`. To enable the integration for
+all Geometrixx Outdoors templates simply change this to `activestandards/components/page`.
 
-Once installed the page component needs to be set as the `sling:resourceSuperType` for any existing page components you wish to be able to validate with ActiveStandards.
-The API key used to authenticate requests to the ActiveStandards API is set as a Cloud Service configuration. A website Id also needs to be specified. This is done with a 
-Cloud Service framework. The framework needs to be set in the properties of a site's root page, or specific sub-pages, depending on how the site structure relates to the sites
-set up in ActiveStandards. 
+The API key used to authenticate requests to the ActiveStandards API is set as a Cloud Service configuration. If you don't already have an API Key you will need to request one from
+ActiveStandards. If an ActiveStandards Service node doesn't exist under Cloud Services Configurations then one will need to be created. To do this create a page in the root of Cloud
+Services Configurations using the Service template. Any meaningful value can be entered as the Title, but the Name must be `activestandards`. Create a new page under this node using
+the 'ActiveStandards Cloud Service Config' template. Open the page and set the API Key value. If required it's also possible to define the host name and port of a proxy server to
+use for requests to ActiveStandards. Under the configuration node create a new page using the 'ActiveStandards QuickCheck Framework' template. Open the page and set the Website Id
+(this value is also provided by ActiveStandards). Finally, associate the Framework with the root page of your website. Different Frameworks can be associated with different sites,
+or can be used to override the default Website Id by associating it with a page somewhere below the root of a site.
+
 An `ActiveStandards Quick Check` button is added to the Sidekick in the Page tab. Clicking this button will open the Quick Check results page in a new browser window (or tab)
 
 Outstanding tasks
