@@ -3,9 +3,9 @@ var getContentUrl = "/services/as/quickcheck/getContent";
 var toggleLinkText = "Click here to show {0} view";
 var toggleLinkUrl = "javascript:ToggleDisplay('{0}')";
 
-ShowCheckpoint = function(assetId, checkpointId, canHighlightPage, canHighlightSource) {
-    console.debug(assetId, checkpointId, canHighlightPage, canHighlightSource);
-	
+ShowCheckpoint = function(assetId, checkpointId, canHighlightPage, canHighlightSource, currentCheckpoint) {
+    console.debug(assetId, checkpointId, canHighlightPage, canHighlightSource, currentCheckpoint.parentElement);
+
     if (canHighlightPage) {
         LoadPage(assetId, checkpointId, canHighlightSource);
     } else if (canHighlightSource) {
@@ -14,6 +14,9 @@ ShowCheckpoint = function(assetId, checkpointId, canHighlightPage, canHighlightS
     	console.debug("Unable to highlight error");
     	ReadPage();
     }
+    
+    $("#left li div").addClass("hidden");
+    $("#" + checkpointId + " div").removeClass("hidden");
 }
 
 if (!String.prototype.format) {

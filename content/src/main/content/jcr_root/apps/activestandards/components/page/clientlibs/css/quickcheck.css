@@ -1,9 +1,11 @@
 #container { height: 480px; font: 12px verdana }
 #container div { /*border: 1px solid black*/ }
+#container .hidden { display: none }
+#container .clearfix { clear: both; border: none }
+
 #left { float: left; width: 20%; height: 100% }
+
 #right { float: left; width: 79%; height: 100% }
 #right #header { min-height: 40px; height: 40px; display: table }
 #right #header a { vertical-align: middle; display: table-cell }
-#right #header .hidden { display: none }
 #right #content { /*height: 91%*/ }
-#container .clearfix { clear: both; border: none }

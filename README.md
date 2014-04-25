@@ -52,4 +52,3 @@ Outstanding tasks
 While the integration is usable in its current state there are still a number of outstanding functional elements:
 
 - Improve the styling of the results presentation page
-- Add the display of the failed checkpoint description to the results presentation page
